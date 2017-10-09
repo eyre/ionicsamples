@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>极光IM</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+  <button (click)="loadAuthPayloadAndInit()" ion-button block>Init</button>
+    <ion-item>
+      <ion-label fixed>注册用户名</ion-label>
+      <ion-input type="text" placeholder="请输入用户名" #username></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label fixed>密码</ion-label>
+      <ion-input type="password" placeholder="请输入密码" #password></ion-input>
+    </ion-item>
+    <button ion-button block (click)="register(username.value, password.value)">
+      Register
+    </button>
+  <button (click)="login()" ion-button block>Login</button>
+    <ion-item>
+      <ion-label fixed>发送信息到用户名</ion-label>
+      <ion-input type="text" placeholder="请输入用户名" #target_username></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label fixed>发送内容</ion-label>
+      <ion-input type="text" placeholder="请输入文本内容" #content></ion-input>
+    </ion-item>
+    <button ion-button block (click)="sendSingleMsg(target_username.value, content.value)">
+      Send Single Msg
+    </button>
+<!--   <button (click)="jpushGetRegistrationID()" ion-button block>Get RegistrationID</button>
+  <button (click)="jpushResumePush()" ion-button block>Resume</button>
+  <button (click)="jpushStop()" ion-button block>Stoped</button>
+  <button (click)="jpushSetAlias()" ion-button block>SetAlias</button> -->
+</ion-content>
