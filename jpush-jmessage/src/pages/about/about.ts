@@ -3,10 +3,13 @@ import { Platform } from 'ionic-angular';
 import { NavController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
-import {HttpService} from '../../../services/http.services';
-declare let JMessage:any;
-const appkey = 'd999b5f6dedbdcb5ff0f4a04';
-const secretkey = '8c309f6916c00a3e09ac1ed7'
+
+import { md5 } from '../../services/tools';
+
+declare var JMessage: any;
+// declare let JMessage:any;
+const appkey = '789e60ca59f6120d4c4f93d6';
+// const secretkey = '8c309f6916c00a3e09ac1ed7'
 
 @Component({
   selector: 'page-about',
@@ -16,129 +19,89 @@ export class AboutPage {
 
 	protected jmessage:any;
     protected username:string;
-  constructor(public platform:Platform, public navCtrl: NavController, public alertCtrl: AlertController, private httpService: HttpService) {
+  constructor(public platform:Platform, public navCtrl: NavController, public alertCtrl: AlertController) {
   }
     ngOnInit(){
-        this.jmessage = new JMessage({
-            debug : true
-        });
+    	console.log('init success');
+    	this.init();
+        // this.jmessage = new JMessage({
+        //     debug : true
+        // });
+        // this.initJMessage();
     }
-    loadAuthPayloadAndInit() {
-        this.httpService.jmessage_auth_payload().subscribe(
-        data => {
-            console.log(data);
-            if(data.err_code!=200){
-                alert(data.err_msg);
-            }else{
-                let payload = data.result;
-                console.log(payload);
-                this.initJMessage(payload);
-            }
-        },
-        error => {
-            console.log(error);
-            alert(error);
-        });
+
+    init(){
+    	JMessage.init({ isOpenMessageRoaming: true });
+    	JMessage.setDebugMode({ enable: true });
+
+	    var listener = function (msg) {
+            console.log(JSON.stringify(msg));
+            alert('接收到消息'+JSON.stringify(msg));
+		};
+		JMessage.addReceiveMessageListener(listener);
     }
-    initJMessage(auth_payload:any){
-        this.jmessage.init({
-            "appkey": auth_payload.appkey,
-            "random_str": auth_payload.random_str,
-            "signature": auth_payload.signature,
-             "timestamp": auth_payload.timestamp,
-             "flag":1    //是否启用消息记录漫游，默认 0 否，1 是
-        }).onAck(function(data){
-          console.log('ack:' + JSON.stringify(data));
-        }).onSuccess(function(data) {
-            console.log('success:' + JSON.stringify(data));
-        }).onFail(function(data) {
-            alert('error:' + JSON.stringify(data))
-        });
-        this.jmessage.onMsgReceive(function(data) {
-            var msg = data;
-            var body = data.messages[0].content.msg_body;
-            //console.log(data.messages[0].content);
-            data = JSON.stringify(data);
-            console.log('msg_receive:' + data);
-            alert('msg_receive:' + data);
-            // if(msg.messages[0].content.msg_type === 'image'){  //消息转发
-            //   this.jmessage.sendGroupPic({
-            //      'target_gid' : gid,
-            //      'target_gname' : target_gname,
-            //      'msg_body':body
-            //   }).onSuccess(function(data) {
-            //      console.log('消息转发成功');
-            //   })
-            // }
-        });
-        this.jmessage.onEventNotification(function(data) {
-            console.log('event_receive: ' + JSON.stringify(data));
-        });
-        this.jmessage.onSyncConversation(function(data) { //离线消息同步监听
-            console.log('event_receive: ' + data);
-        });
-        this.jmessage.onUserInfUpdate(function(data) {
-            console.log('onUserInfUpdate : ' + JSON.stringify(data));
-        });
-        this.jmessage.onSyncEvent(function(data) {
-            console.log('onSyncEvent : ' + JSON.stringify(data));
-        });
-        this.jmessage.onDisconnect(function(){
-            alert('JMessage 断开!');
-        });
+
+    login(username: string, password: string){
+    	// alert('登录成功');
+    	JMessage.login({ username: username, password: password },
+		  (data) => {
+            console.log(JSON.stringify(data));
+            alert('登录成功');
+		  }, 
+		  (error) => {
+		    var code = error.code;
+		    var desc = error.description;
+		    console.log(JSON.stringify(error));
+            alert('登录失败');
+		  }
+	  	)
     }
-    register(username: string, password: string) {
-        if(username.length==0 || password.length==0){
-            alert('请输入用户名和密码');
-            return;
-        }
-        this.username = username;
-        this.jmessage.register({
-            'username' : username,
-            'password': password,
-            'is_md5' : false
-        }).onAck(function(data){
-            // this.user.username= username;
-            // this.user.password= password;
-            // console.log('user:' + JSON.stringify(this.user));
-          console.log('ack:' + JSON.stringify(data));
-        }).onSuccess(function(data) {
-            console.log('success:' + JSON.stringify(data));
-        }).onFail(function(data) {
-            alert('error:' + JSON.stringify(data))
-        });
-    }
-    login() {
-        this.jmessage.login({
-            'username' : this.username,
-            'password' : 'password'
-        }).onSuccess(function(data) {
-            console.log('success:' + JSON.stringify(data));
-            alert('登录成功')
-        }).onFail(function(data) {
-            console.log('error:' + JSON.stringify(data));
-            alert('登录失败')
-        }).onTimeout(function(data) {
-            console.log('timeout:' + JSON.stringify(data));
-            alert('登录超时')
-        });
-    }
+
     sendSingleMsg(target_username: string, content: string) {
-        this.jmessage.sendSingleMsg({
-            'target_username' : target_username,
-            'target_nickname' : target_username,
-            'content' : content,
-            'custom_notification' : {
-               'enabled':true,
-               'title':'放假咯',
-               'alert':'今天放假一天，大家好好玩'
-            }
-        }).onSuccess(function(data) {
-            console.log('success:' + JSON.stringify(data));
-        }).onFail(function(data) {
-            console.log('error:' + JSON.stringify(data));
-        });
+	    this.getConversation(target_username, content);
     }
+
+	getConversation(target_username: string , content: string){
+		JMessage.getConversation({ type: 'single', username: target_username, appKey: appkey },
+		  (conversation) => {
+            console.log('获取会话成功'+JSON.stringify(conversation));
+
+            this.sendTextMessage(target_username, content);
+		  }, (error) => {
+		    var code = error.code
+		    var desc = error.description
+		    console.log('获取会话失败'+JSON.stringify(error));
+		    this.createConversation(target_username, content);
+		  })
+	}
+
+	createConversation(target_username: string , content: string){
+		JMessage.createConversation({ type: 'single', username: target_username, appKey: appkey },
+		  (conversation) => {
+            console.log(JSON.stringify(conversation));
+            console.log('创建会话成功');
+
+            this.sendTextMessage(target_username, content);
+		  }, (error) => {
+		    var code = error.code
+		    var desc = error.description
+		    console.log('创建会话失败'+JSON.stringify(error));
+		  })
+	}
+
+	sendTextMessage(target_username: string, content: string){
+	    JMessage.sendTextMessage({ type: 'single', username: target_username, appKey: appkey,
+		  text: content, extras: {key1: 'value1'}, messageSendingOptions: JMessage.messageSendingOptions },
+		  (msg) => {
+            console.log('发送成功'+JSON.stringify(msg));
+            alert('发送成功');
+		  }, (error) => {
+		    var code = error.code
+		    var desc = error.description
+		    console.log('发送失败'+JSON.stringify(error));
+            alert('发送失败');
+		  })
+	}
 
 
 }

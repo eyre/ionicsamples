@@ -4,19 +4,20 @@
   </ion-navbar>
 </ion-header>
 <ion-content padding>
-  <button (click)="loadAuthPayloadAndInit()" ion-button block>Init</button>
+  <!-- <button (click)="loadAuthPayloadAndInit()" ion-button block>Init</button> -->
     <ion-item>
-      <ion-label fixed>注册用户名</ion-label>
+      <ion-label fixed>用户名</ion-label>
       <ion-input type="text" placeholder="请输入用户名" #username></ion-input>
     </ion-item>
     <ion-item>
       <ion-label fixed>密码</ion-label>
       <ion-input type="password" placeholder="请输入密码" #password></ion-input>
     </ion-item>
-    <button ion-button block (click)="register(username.value, password.value)">
-      Register
+    <button ion-button block (click)="login(username.value, password.value)">
+      Login
     </button>
-  <button (click)="login()" ion-button block>Login</button>
+    <!-- <button (click)="init()" ion-button block>Init</button> -->
+  <!-- <button (click)="login()" ion-button block>Login</button> -->
     <ion-item>
       <ion-label fixed>发送信息到用户名</ion-label>
       <ion-input type="text" placeholder="请输入用户名" #target_username></ion-input>
