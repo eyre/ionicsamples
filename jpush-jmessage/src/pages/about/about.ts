@@ -4,8 +4,6 @@ import { NavController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 
-import { md5 } from '../../services/tools';
-
 declare var JMessage: any;
 // declare let JMessage:any;
 const appkey = '789e60ca59f6120d4c4f93d6';
