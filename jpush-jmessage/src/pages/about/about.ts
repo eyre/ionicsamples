@@ -39,6 +39,22 @@ export class AboutPage {
 		JMessage.addReceiveMessageListener(listener);
     }
 
+    register(username: string, password: string){
+    	// alert('登录成功');
+    	JMessage.register({ username: username, password: password },
+		  (data) => {
+            console.log(JSON.stringify(data));
+            alert('注册成功'+JSON.stringify(data));
+		  }, 
+		  (error) => {
+		    var code = error.code;
+		    var desc = error.description;
+		    console.log(JSON.stringify(error));
+            alert('注册失败'+JSON.stringify(error));
+		  }
+	  	)
+    }
+
     login(username: string, password: string){
     	// alert('登录成功');
     	JMessage.login({ username: username, password: password },
@@ -50,7 +66,7 @@ export class AboutPage {
 		    var code = error.code;
 		    var desc = error.description;
 		    console.log(JSON.stringify(error));
-            alert('登录失败');
+            alert('登录失败'+JSON.stringify(error));
 		  }
 	  	)
     }
@@ -97,7 +113,7 @@ export class AboutPage {
 		    var code = error.code
 		    var desc = error.description
 		    console.log('发送失败'+JSON.stringify(error));
-            alert('发送失败');
+            alert('发送失败'+JSON.stringify(error));
 		  })
 	}
 

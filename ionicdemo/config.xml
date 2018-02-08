@@ -88,4 +88,5 @@
     <plugin name="jpush-phonegap-plugin" spec="^3.3.3">
         <variable name="APP_KEY" value="789e60ca59f6120d4c4f93d6" />
     </plugin>
+    <plugin name="cordova-plugin-share" spec="file:///Users/simon/Workspace/ionic/cordova/SharePlugin" />
 </widget>
